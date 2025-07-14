@@ -1,6 +1,12 @@
-<script lang="ts" setup>
-import SplashView from "./views/SplashView.vue";
+<script setup lang="ts">
 import TutorialView from "./views/TutorialView.vue";
+import KeyboardView from "./components/KeyboardView.vue";
+import { ref } from 'vue';
+
+const pressedKey = ref('');
+const handleKeyPress = (key: string) => {
+  pressedKey.value = key;
+};
 </script>
 
 <template>
@@ -32,8 +38,9 @@ import TutorialView from "./views/TutorialView.vue";
       <TutorialView />
     </section>
 
-    <!--    ui 확인용 -->
-<!--    <SplashView />-->
+    <KeyboardView @key-press="handleKeyPress" />
+    <p>Pressed key: {{ pressedKey }}</p>
+
   </div>
 </template>
 
