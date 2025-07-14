@@ -4,7 +4,7 @@
       <img src="@/assets/images/splash-logo.png" alt="꼬들밥 로고" class="logo" />
       <div class="text-group">
         <h1 class="title">꼬들밥</h1>
-        <p class="subtitle">한글 자모 맞추기 게임</p>
+        <p class="subtitle suit_m3">한글 자모 맞추기 게임</p>
       </div>
     </div>
   </div>
@@ -63,10 +63,6 @@ onMounted(() => {
 }
 
 .subtitle {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 1.33;
   color: var(--gray-300);
 }
 </style>

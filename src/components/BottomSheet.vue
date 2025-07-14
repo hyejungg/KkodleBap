@@ -3,7 +3,7 @@
     <div v-if="modelValue" class="bottom-sheet-backdrop" @click.self="close">
       <div class="bottom-sheet-container">
         <div class="bottom-sheet-header">
-          <button @click="close" class="close-button">닫기</button>
+          <button class="close-button suit_r4" @click="close">닫기</button>
         </div>
         <div class="bottom-sheet-content">
           <slot></slot>
@@ -13,7 +13,7 @@
   </transition>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 defineProps<{ modelValue: boolean }>();
 const emit = defineEmits(['update:modelValue']);
 
@@ -54,8 +54,6 @@ const close = () => {
 }
 
 .close-button {
-  font-family: 'SUIT', sans-serif;
-  font-size: 16px;
   color: var(--gray-700);
   background: none;
   border: none;
