@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "types": ["vite/client"]
+  },
+  "exclude": ["node_modules"],
+  "references": [
+  ]
+}
