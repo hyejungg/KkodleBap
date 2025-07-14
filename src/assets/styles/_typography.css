@@ -1,0 +1,62 @@
+.suit_b1 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.27;
+}
+
+.suit_sb1 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.375;
+}
+
+.suit_m1 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.21;
+}
+
+.suit_m3 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.33;
+}
+
+.suit_m4 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.375;
+}
+
+.suit_r1 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.suit_r2 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.suit_r4 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.375;
+}
+
+.suit_r5 {
+  font-family: "SUIT", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.42;
+}
