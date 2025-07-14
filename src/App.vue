@@ -1,3 +1,8 @@
+<script lang="ts" setup>
+import SplashView from "./views/SplashView.vue";
+import TutorialView from "./views/TutorialView.vue";
+</script>
+
 <template>
   <div class="container">
     <h1 class="suit_b1">디자인 시스템 예시</h1>
@@ -19,6 +24,16 @@
         <div class="color-box" style="background-color: var(--red-700); color: white;">red-700</div>
       </div>
     </section>
+
+    <hr/>
+
+    <section>
+      <h2 class="suit_sb1">컴포넌트 테스트</h2>
+      <TutorialView />
+    </section>
+
+    <!--    ui 확인용 -->
+<!--    <SplashView />-->
   </div>
 </template>
 
@@ -51,3 +66,4 @@ section {
   font-size: 14px;
 }
 </style>
+
