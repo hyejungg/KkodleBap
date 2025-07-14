@@ -19,7 +19,7 @@ const router = useRouter();
 onMounted(() => {
   setTimeout(() => {
     // TODO: GameView 라우트가 추가되면 경로 수정 필요
-    router.push({ path: '/' }); 
+    router.push({ path: '/game' }); 
   }, 3000);
 });
 </script>

@@ -41,8 +41,10 @@ const getKeyClass = (key: string) => {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 1rem;
+  padding: 0.5rem;
   background-color: #FFFFFF; /* Assuming a white background */
+  max-width: 500px; /* Adjust as needed for larger screens */
+  margin: 0 auto; /* Center the keyboard */
 }
 
 .keyboard-row {
