@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import KeyboardView from "../components/KeyboardView.vue";
-import { ref } from "vue";
+import {ref} from "vue";
 
 const board = ref(Array(6).fill('').map(() => Array(6).fill('')));
 const currentRow = ref(0);
@@ -29,28 +29,34 @@ const handleKeyPress = (key: string) => {
 <template>
   <div class="flex flex-col h-screen bg-white dark:bg-gray-900">
     <!-- Header -->
-    <header class="relative flex justify-center items-center p-4">
-      <img alt="KkodleBap Logo" class="h-12 w-auto" src="/logo.svg" />
+    <header class="flex items-center justify-between m-2 relative">
+      <div class="w-6" /> <!-- 왼쪽 공간 확보용 -->
+      <div class="title-text text-center">
+        <h1>꼬들밥</h1>
+        <p>한글 자모 맞추기 게임</p>
+      </div>
       <img
-        alt="Help"
-        class="absolute right-4 h-6 w-6"
-        src="/src/assets/icons/question-mark.svg"
+          alt="Help"
+          class="h-6 w-6 mr-2"
+          src="/src/assets/icons/question-mark.svg"
       />
     </header>
 
+
+
     <!-- Game Board -->
     <main
-      class="flex-grow flex flex-col items-center justify-center p-4 gap-2"
+        class="flex-grow flex flex-col items-center justify-center p-4 gap-2"
     >
       <div
-        v-for="(row, rowIndex) in board"
-        :key="rowIndex"
-        class="flex gap-2 w-full max-w-sm sm:max-w-md"
+          v-for="(row, rowIndex) in board"
+          :key="rowIndex"
+          class="flex gap-2 w-full max-w-sm sm:max-w-md"
       >
         <div
-          v-for="(char, cellIndex) in row"
-          :key="cellIndex"
-          class="flex-1 aspect-square bg-blue_100 rounded-[7.69px] flex items-center justify-center text-2xl font-bold text-gray-800 dark:text-white shadow-sm"
+            v-for="(char, cellIndex) in row"
+            :key="cellIndex"
+            class="flex-1 aspect-square bg-blue_100 rounded-[7.69px] flex items-center justify-center text-2xl font-bold text-gray-800 dark:text-white shadow-sm"
         >
           {{ char }}
         </div>
@@ -59,7 +65,7 @@ const handleKeyPress = (key: string) => {
 
     <!-- Keyboard -->
     <footer class="p-4">
-      <KeyboardView @key-press="handleKeyPress" />
+      <KeyboardView @key-press="handleKeyPress"/>
     </footer>
   </div>
 </template>
