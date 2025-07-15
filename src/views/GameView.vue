@@ -15,12 +15,12 @@
     <!-- Game Grid -->
     <main class="flex-grow p-4 flex items-center justify-center">
       <div class="grid grid-rows-6 gap-1.5">
-        <div v-for="(row, rowIndex) in board" :key="rowIndex" class="grid grid-cols-6 gap-1.5">
+        <div v-for="(row, rowIndex) in board" :key="rowIndex" class="grid grid-cols-6 gap-[5px]">
           <div
             v-for="(tile, tileIndex) in row"
             :key="tileIndex"
             :class="getTileClass(tile, rowIndex, tileIndex)"
-            class="w-16 h-16 border-2 rounded-md flex items-center justify-center text-2xl font-bold"
+            class="w-[42px] h-[42px] rounded-[7.69px] flex items-center justify-center text-2xl font-bold"
           >
             {{ tile.key }}
           </div>
@@ -131,18 +131,7 @@ const getLetterState = (guess: string, index: number): string => {
 };
 
 const getTileClass = (tile: { key: string; state: string }, rowIndex: number, tileIndex: number) => {
-  const classes = [];
-
-  // Set base style for tiles with content
-  if (tile.key) {
-    classes.push('border-gray-400');
-    // Apply blue background for the current guessing row
-    if (rowIndex === currentRow.value) {
-      classes.push('bg-blue-100');
-    }
-  } else {
-    classes.push('border-gray-300');
-  }
+  const classes = ['bg-blue-100']; // Default background color
 
   // Set styles for revealed tiles (previous rows)
   if (rowIndex < currentRow.value) {
@@ -150,12 +139,13 @@ const getTileClass = (tile: { key: string; state: string }, rowIndex: number, ti
     classes.push(`delay-${tileIndex * 100}`);
     classes.push('transform rotate-x-180');
 
+    // Override background for revealed states
     if (tile.state === 'correct') {
-      classes.push('bg-green-500 text-white border-green-500');
+      classes.push('bg-green-500 text-white');
     } else if (tile.state === 'present') {
-      classes.push('bg-yellow-500 text-white border-yellow-500');
+      classes.push('bg-yellow-500 text-white');
     } else {
-      classes.push('bg-gray-500 text-white border-gray-500');
+      classes.push('bg-gray-500 text-white');
     }
   }
   
