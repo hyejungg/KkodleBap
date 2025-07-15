@@ -45,15 +45,15 @@
 }
 
 .title {
-  color: var(--gray-700);
+  color: var(--color-gray-700);
 }
 
 .description {
-  color: var(--gray-700);
+  color: var(--color-gray-700);
 }
 
 .info-box, .example-box {
-  background-color: var(--gray-100);
+  background-color: var(--color-gray-100);
   border-radius: 10px;
   padding: 16px;
   display: flex;

@@ -4,11 +4,11 @@
     <header class="flex items-center justify-between m-2 p-2 relative">
       <div class="w-6"></div> <!-- 왼쪽 공간 확보용 -->
       <div class="title-text text-center">
-        <h1 class="text-2xl font-bold">꼬들밥</h1>
+        <h1 class="suit_b_title">꼬들밥</h1>
         <p class="p-1 text-sm text-gray-200">한글 자모 맞추기 게임</p>
       </div>
-      <div @click="showTutorial">
-        <img alt="Tutorial" class="pr-2 h-6 w-6" src="@/assets/icons/question-mark.svg">
+      <div class="cursor-pointer" @click="showTutorial">
+        <img alt="Tutorial" class="pr-2 h-8 w-8" src="@/assets/icons/question-mark.svg">
       </div>
     </header>
 

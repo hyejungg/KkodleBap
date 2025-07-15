@@ -1,3 +1,10 @@
+.suit_b_title {
+  font-family: "SUIT", sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 1.27;
+}
+
 .suit_b1 {
   font-family: "SUIT", sans-serif;
   font-weight: 700;
