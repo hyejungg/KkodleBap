@@ -1,35 +1,42 @@
 <template>
   <div class="flex flex-col w-screen h-screen max-w-md mx-auto bg-white">
     <!-- Header -->
-    <header class="flex items-center justify-between m-2 relative">
+    <header class="flex items-center justify-between m-2 p-2 relative">
       <div class="w-6"></div> <!-- 왼쪽 공간 확보용 -->
       <div class="title-text text-center">
-        <h1 class="text-xl font-bold">꼬들밥</h1>
-        <p class="text-sm text-gray-200">한글 자모 맞추기 게임</p>
+        <h1 class="text-2xl font-bold">꼬들밥</h1>
+        <p class="p-1 text-sm text-gray-200">한글 자모 맞추기 게임</p>
       </div>
       <div @click="showTutorial">
-        <img alt="Tutorial" class="h-6 w-6" src="@/assets/icons/question-mark.svg">
+        <img alt="Tutorial" class="pr-2 h-6 w-6" src="@/assets/icons/question-mark.svg">
       </div>
     </header>
 
     <!-- Game Grid -->
     <main class="flex-grow p-4 flex items-center justify-center">
-      <div class="grid grid-rows-6 gap-1.5">
-        <div v-for="(row, rowIndex) in board" :key="rowIndex" class="grid grid-cols-6 gap-[5px]">
-          <div
-            v-for="(tile, tileIndex) in row"
-            :key="tileIndex"
-            :class="getTileClass(tile, rowIndex, tileIndex)"
-            class="w-[42px] h-[42px] rounded-[7.69px] flex items-center justify-center text-2xl font-bold"
-          >
-            {{ tile.key }}
+      <div class="flex flex-col items-center">
+        <div class="grid grid-rows-6 gap-1.5">
+          <div v-for="(row, rowIndex) in board" :key="rowIndex" class="grid grid-cols-6 gap-x-[8px] gap-y-[8px]">
+            <div
+              v-for="(tile, tileIndex) in row"
+              :key="tileIndex"
+              :class="getTileClass(tile, rowIndex, tileIndex)"
+              class="w-[42px] h-[42px] rounded-[7.69px] flex items-center justify-center text-2xl font-bold"
+            >
+              {{ tile.key }}
+            </div>
           </div>
+        </div>
+        <div class="h-8 mt-2 flex items-center justify-center">
+          <p v-if="feedbackMessage" class="text-red-700 text-sm font-medium">
+            {{ feedbackMessage }}
+          </p>
         </div>
       </div>
     </main>
 
     <!-- Keyboard -->
-    <KeyboardView @key-press="handleKeyPress" />
+    <KeyboardView  @key-press="handleKeyPress" />
 
     <!-- Tutorial Bottom Sheet -->
     <BottomSheet v-model="isTutorialVisible">
@@ -43,30 +50,31 @@ import {computed, onMounted, ref} from 'vue';
 import KeyboardView from '@/components/KeyboardView.vue';
 import BottomSheet from '@/components/BottomSheet.vue';
 import TutorialView from '@/views/TutorialView.vue';
+import {drawAnswer, isValidWord, splitWordToJamo} from '@/utils/jamo';
 
 const isTutorialVisible = ref(false);
+const feedbackMessage = ref('');
 
 // --- Game State ---
-const answer = ref('ㅂㅏㄴㅏㄴㅏ'); // 6 jamos
-const guesses = ref<string[]>(Array(6).fill(''));
+const answerWord = ref('');
+const answer = ref<string[]>([]);
+const guesses = ref<string[][]>(Array.from({ length: 6 }, () => []));
+const guessStates = ref<string[][]>(Array.from({ length: 6 }, () => Array(6).fill('empty')));
 const currentRow = ref(0);
 const isRevealing = ref(false);
 const isGameOver = ref(false);
 
 // --- Board Logic ---
 const board = computed(() => {
-  const boardState: { key: string; state: string }[][] = [];
-  for (let i = 0; i < 6; i++) {
+  return guesses.value.map((guessRow, rowIndex) => {
     const row: { key: string; state: string }[] = [];
-    const guess = guesses.value[i];
-    for (let j = 0; j < 6; j++) {
-      const key = i === currentRow.value ? (currentGuess.value[j] || '') : (guess[j] || '');
-      const state = getLetterState(guess, j);
+    for (let i = 0; i < 6; i++) {
+      const key = guessRow[i] || '';
+      const state = guessStates.value[rowIndex][i];
       row.push({ key, state });
     }
-    boardState.push(row);
-  }
-  return boardState;
+    return row;
+  });
 });
 
 const currentGuess = computed(() => guesses.value[currentRow.value]);
@@ -75,88 +83,99 @@ const currentGuess = computed(() => guesses.value[currentRow.value]);
 const handleKeyPress = (key: string) => {
   if (isGameOver.value || isRevealing.value) return;
 
+  const currentGuessArray = currentGuess.value;
+
   if (key === 'enter') {
     submitGuess();
   } else if (key === 'backspace') {
-    guesses.value[currentRow.value] = currentGuess.value.slice(0, -1);
-  } else if (currentGuess.value.length < 6) {
-    guesses.value[currentRow.value] += key;
+    currentGuessArray.pop();
+  } else if (currentGuessArray.length < 6) {
+    if (feedbackMessage.value.length > 0) {
+      feedbackMessage.value = ''; // Clear feedback message on new input
+    }
+    currentGuessArray.push(key);
   }
 };
 
 const submitGuess = () => {
   if (currentGuess.value.length !== 6) {
-    // Add feedback for not enough letters
-    console.log('Not enough letters');
+    feedbackMessage.value = '자모 6개를 입력해주세요!';
     return;
   }
 
-  // Basic validation (can be expanded with a word list)
-  console.log(`Submitting guess: ${currentGuess.value}`);
+  if (!isValidWord(currentGuess.value)) {
+    feedbackMessage.value = '사전에 없는 단어입니다.';
+    return;
+  }
+
+  // Calculate states for the current row
+  guessStates.value[currentRow.value] = calculateGuessState(currentGuess.value);
   
   isRevealing.value = true;
   setTimeout(() => {
     isRevealing.value = false;
     checkWinLoss();
-    currentRow.value++;
-  }, 300 * 6); // Animation delay
+    if (!isGameOver.value && currentRow.value < 5) {
+      currentRow.value++;
+    }
+  }, 350 * 6); // Animation delay
 };
 
 const checkWinLoss = () => {
-    if (currentGuess.value === answer.value) {
+    if (currentGuess.value.join('') === answer.value.join('')) {
         isGameOver.value = true;
         setTimeout(() => alert('성공!'), 100);
-        // router.push('/result');
     } else if (currentRow.value === 5) {
         isGameOver.value = true;
-        setTimeout(() => alert(`실패! 정답: ${answer.value}`), 100);
-        // router.push('/result');
+        setTimeout(() => alert(`실패! 정답: ${answerWord.value}`), 100);
     }
 }
 
 // --- Styling Logic ---
-const getLetterState = (guess: string, index: number): string => {
-  if (!guess || guess.length <= index) return 'empty';
-  
-  const letter = guess[index];
-  const answerLetter = answer.value[index];
+const calculateGuessState = (guessJamos: string[]): string[] => {
+  const states: string[] = Array(6).fill('absent');
+  const answerCopy = [...answer.value];
+  const guessCopy = [...guessJamos];
 
-  if (letter === answerLetter) {
-    return 'correct'; // Green
+  // First pass for 'correct' matches
+  for (let i = 0; i < 6; i++) {
+    if (guessCopy[i] === answerCopy[i]) {
+      states[i] = 'correct';
+      answerCopy[i] = ''; // Mark as used
+      guessCopy[i] = '';   // Mark as used
+    }
   }
-  if (answer.value.includes(letter)) {
-    return 'present'; // Yellow
+
+  // Second pass for 'present' matches
+  for (let i = 0; i < 6; i++) {
+    if (guessCopy[i] !== '') {
+      const presentIndex = answerCopy.indexOf(guessCopy[i]);
+      if (presentIndex !== -1) {
+        states[i] = 'present';
+        answerCopy[presentIndex] = ''; // Mark as used
+      }
+    }
   }
-  return 'absent'; // Gray
+
+  return states;
 };
 
+
 const getTileClass = (tile: { key: string; state: string }, rowIndex: number, tileIndex: number) => {
-  const classes = ['bg-blue-100']; // Default background color
+  const classes = ['bg-blue-100', 'text-gray-700'];
 
-  // Set styles for revealed tiles (previous rows)
   if (rowIndex < currentRow.value) {
-    classes.push('transition-transform duration-300 ease-in-out');
-    classes.push(`delay-${tileIndex * 100}`);
-    classes.push('transform rotate-x-180');
-
-    // Override background for revealed states
     if (tile.state === 'correct') {
-      classes.push('bg-green-500 text-white');
+      classes.push('bg-blue-600', 'text-gray-700');
     } else if (tile.state === 'present') {
-      classes.push('bg-yellow-500 text-white');
-    } else {
-      classes.push('bg-gray-500 text-white');
+      classes.push('bg-blue-400', 'text-gray-700');
+    } else if (tile.state === 'absent') {
+      classes.push('bg-gray-200', 'text-gray-700');
     }
   }
   
   return classes.join(' ');
 };
-
-const bgBlue100 = {
-  'background-color': 'var(--blue-100)'
-}
-
-
 
 // --- Navigation ---
 const showTutorial = () => {
@@ -165,15 +184,20 @@ const showTutorial = () => {
 
 // --- Lifecycle ---
 onMounted(() => {
-  // Logic to fetch daily word can go here
-  console.log('GameView mounted. Today\'s answer:', answer.value);
+  const drawnWord = drawAnswer();
+  if (drawnWord) {
+    answerWord.value = drawnWord;
+    answer.value = splitWordToJamo(answerWord.value);
+    console.log('GameView mounted. Today\'s answer:', answerWord.value, answer.value);
+  } else {
+    // Handle case where no word could be drawn
+    feedbackMessage.value = "단어를 불러오는데 실패했습니다.";
+    isGameOver.value = true;
+  }
 });
 </script>
 
 <style scoped>
-.rotate-x-180 {
-  transform: rotateX(180deg);
-}
 .delay-0 { transition-delay: 0ms; }
 .delay-100 { transition-delay: 100ms; }
 .delay-200 { transition-delay: 200ms; }
@@ -181,7 +205,4 @@ onMounted(() => {
 .delay-400 { transition-delay: 400ms; }
 .delay-500 { transition-delay: 500ms; }
 
-.bg-blue-100 {
-  background-color: var(--blue-100);
-}
 </style>

@@ -1,22 +1,22 @@
 <template>
-  <div class="keyboard-view">
+  <div class="keyboard-view" >
     <div v-for="(row, rowIndex) in keyRows" :key="rowIndex" class="keyboard-row">
       <button
         v-for="key in row"
         :key="key"
-        class="key"
         :class="getKeyClass(key)"
+        class="key"
         @click="handleKeyPress(key)"
       >
-        <img v-if="key === 'backspace'" src="@/assets/icons/backspace.svg" alt="Backspace" />
-        <img v-else-if="key === 'enter'" src="@/assets/icons/check.svg" alt="Enter" />
+        <img v-if="key === 'backspace'" alt="Backspace" src="@/assets/icons/backspace.svg" />
+        <img v-else-if="key === 'enter'" alt="Enter" src="@/assets/icons/check.svg" />
         <span v-else>{{ key }}</span>
       </button>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const emit = defineEmits(['key-press']);
 
 const keyRows = [
@@ -41,7 +41,7 @@ const getKeyClass = (key: string) => {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 0.5rem;
+  padding-bottom: 1rem;
   background-color: #FFFFFF; /* Assuming a white background */
   max-width: 500px; /* Adjust as needed for larger screens */
   margin: 0 auto; /* Center the keyboard */
@@ -68,8 +68,8 @@ const getKeyClass = (key: string) => {
 }
 
 .key-char {
-  background-color: var(--blue-100);
-  color: var(--gray-700);
+  background-color: var(--color-blue-100);
+  color: var(--color-gray-700);
 }
 
 .key-char:hover {
@@ -82,7 +82,7 @@ const getKeyClass = (key: string) => {
 }
 
 .key-backspace {
-  background-color: var(--gray-200);
+  background-color: var(--color-gray-200);
 }
 
 .key-backspace:hover {
@@ -90,7 +90,7 @@ const getKeyClass = (key: string) => {
 }
 
 .key-enter {
-  background-color: var(--blue-600);
+  background-color: var(--color-blue-600);
   color: white;
 }
 
