@@ -1,12 +1,14 @@
 <template>
   <div class="flex flex-col h-screen max-w-md mx-auto bg-white">
     <!-- Header -->
-    <header class="flex items-center justify-between p-4 border-b">
-      <button class="bg-transparent" @click="showTutorial">
-        <img alt="Tutorial" class="h-6 w-6" src="@/assets/icons/question-mark.svg">
+    <header class="relative flex items-center justify-center p-4 border-b">
+      <div class="text-center">
+        <h1 class="text-xl font-bold">꼬들밥</h1>
+        <p class="text-sm text-gray-500">한글 자모 맞추기 게임</p>
+      </div>
+      <button @click="showTutorial" class="absolute right-4 bg-transparent">
+        <img src="@/assets/icons/question-mark.svg" alt="Tutorial" class="h-6 w-6">
       </button>
-      <h1 class="text-2xl font-bold">꼬들밥</h1>
-      <div class="w-6 h-6"></div> <!-- Placeholder for right side icon -->
     </header>
 
     <!-- Game Grid -->
@@ -27,15 +29,21 @@
 
     <!-- Keyboard -->
     <KeyboardView @key-press="handleKeyPress" />
+
+    <!-- Tutorial Bottom Sheet -->
+    <BottomSheet v-model="isTutorialVisible">
+      <TutorialView />
+    </BottomSheet>
   </div>
 </template>
 
 <script lang="ts" setup>
 import {computed, onMounted, ref} from 'vue';
-import {useRouter} from 'vue-router';
 import KeyboardView from '@/components/KeyboardView.vue';
+import BottomSheet from '@/components/BottomSheet.vue';
+import TutorialView from '@/views/TutorialView.vue';
 
-const router = useRouter();
+const isTutorialVisible = ref(false);
 
 // --- Game State ---
 const answer = ref('ㅂㅏㄴㅏㄴㅏ'); // 6 jamos
@@ -161,7 +169,7 @@ const bgBlue100 = {
 
 // --- Navigation ---
 const showTutorial = () => {
-  router.push('/tutorial');
+  isTutorialVisible.value = true;
 };
 
 // --- Lifecycle ---
