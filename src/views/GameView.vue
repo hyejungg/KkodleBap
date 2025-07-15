@@ -1,14 +1,15 @@
 <template>
-  <div class="flex flex-col h-screen max-w-md mx-auto bg-white">
+  <div class="flex flex-col w-screen h-screen max-w-md mx-auto bg-white">
     <!-- Header -->
-    <header class="relative flex items-center justify-center p-4 border-b">
-      <div class="text-center">
+    <header class="flex items-center justify-between m-2 relative">
+      <div class="w-6"></div> <!-- 왼쪽 공간 확보용 -->
+      <div class="title-text text-center">
         <h1 class="text-xl font-bold">꼬들밥</h1>
-        <p class="text-sm text-gray-500">한글 자모 맞추기 게임</p>
+        <p class="text-sm text-gray-200">한글 자모 맞추기 게임</p>
       </div>
-      <button @click="showTutorial" class="absolute right-4 bg-transparent">
-        <img src="@/assets/icons/question-mark.svg" alt="Tutorial" class="h-6 w-6">
-      </button>
+      <div @click="showTutorial">
+        <img alt="Tutorial" class="h-6 w-6" src="@/assets/icons/question-mark.svg">
+      </div>
     </header>
 
     <!-- Game Grid -->
