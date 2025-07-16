@@ -132,14 +132,13 @@ const generateShareText = () => {
     const rowText = props.guessStates[i]
       .map<string>((state) => emojiMap[state as GuessState])
       .join('');
-
-    text += rowText + '\n\n';
+    text += rowText + '\n';
   }
 
   const todayStr = formatKoreanDate(new Date());
   const url = `${window.location.protocol}//${window.location.host}`;
 
-  text += `${todayStr}\n\n${url}`;
+  text += `\n${todayStr}\n\n${url}`;
   return text;
 };
 
