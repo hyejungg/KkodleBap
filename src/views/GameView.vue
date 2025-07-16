@@ -36,7 +36,7 @@
     </main>
 
     <!-- Keyboard -->
-    <KeyboardView @key-press="handleKeyPress"/>
+    <KeyboardView :char-states="charStates" @key-press="handleKeyPress"/>
 
     <!-- Tutorial Bottom Sheet -->
     <BottomSheet v-model="isTutorialVisible">
@@ -92,6 +92,7 @@ const guesses = ref<string[][]>(Array.from({length: 6}, () => []));
 const guessStates = ref<string[][]>(Array.from({length: 6}, () => Array(6).fill('empty')));
 const currentRow = ref(0);
 const isGameOver = ref(false);
+const charStates = ref<Record<string, string>>({});
 
 // --- Board Logic ---
 const board = computed(() => {
@@ -139,7 +140,20 @@ const submitGuess = () => {
   }
 
   // Calculate states for the current row
-  guessStates.value[currentRow.value] = calculateGuessState(currentGuess.value);
+  const newStates = calculateGuessState(currentGuess.value);
+  guessStates.value[currentRow.value] = newStates;
+
+  // Update charStates for keyboard coloring
+  currentGuess.value.forEach((char, index) => {
+    const currentState = charStates.value[char];
+    const newState = newStates[index];
+    if (currentState === 'correct') return;
+    if (newState === 'correct' || currentState === 'present' && newState === 'present') {
+      charStates.value[char] = newState;
+    } else if (currentState !== 'present') {
+       charStates.value[char] = newState;
+    }
+  });
 
   checkWinLoss();
   if (!isGameOver.value && currentRow.value < 5) {

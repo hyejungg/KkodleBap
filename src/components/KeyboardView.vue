@@ -17,6 +17,12 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
+
+const props = defineProps<{
+  charStates: Record<string, string>;
+}>();
+
 const emit = defineEmits(['key-press']);
 
 const keyRows = [
@@ -32,6 +38,12 @@ const handleKeyPress = (key: string) => {
 const getKeyClass = (key: string) => {
   if (key === 'backspace') return 'key-special key-backspace';
   if (key === 'enter') return 'key-special key-enter';
+
+  const state = props.charStates[key];
+  if (state === 'correct') return 'key-char correct';
+  if (state === 'present') return 'key-char present';
+  if (state === 'absent') return 'key-char absent';
+
   return 'key-char';
 };
 </script>
@@ -96,5 +108,20 @@ const getKeyClass = (key: string) => {
 
 .key-enter:hover {
   background-color: #2980b9;
+}
+
+.key-char.correct {
+  background-color: var(--color-blue-600);
+  color: var(--color-gray-700);
+}
+
+.key-char.present {
+  background-color: var(--color-blue-400);
+  color: var(--color-gray-700);
+}
+
+.key-char.absent {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-700);
 }
 </style>
