@@ -2,7 +2,7 @@
   <Modal :show="show" @close="$emit('close')">
     <div class="result-container">
       <h3 class="suit_b_title">{{ resultTitle }}</h3>
-      <p class="py-2 suit_b1">{{ resultDescription }}</p>
+      <p class="py-3 suit_m3">{{ resultDescription }}</p>
 
       <div class="my-[3rem] result-image-section">
         <img :alt="resultImageAlt" :src="resultImage" class="result-illustration" />
@@ -10,13 +10,13 @@
       </div>
 
       <div v-if="resultType === 'win'">
-        <button class="bg-blue-600 text-white w-[291px] h-[48px] m-1 rounded cursor-pointer" @click="handleButtonClick">
+        <button class="bg-blue-600 text-white suit_m4 w-[291px] h-[48px] m-1 rounded cursor-pointer" @click="handleButtonClick">
           {{ buttonText }}
         </button>
         <p class="pt-2 suit_m4 text-gray-400 sm:decoration-solid cursor-pointer" @click="copyResultToClipboard">결과 공유하기</p>
       </div>
       <div v-else>
-        <button class="bg-blue-600 text-white w-[291px] h-[48px] m-1 rounded cursor-pointer" @click="handleButtonClick">
+        <button class="bg-blue-600 text-white suit_m4 w-[291px] h-[48px] m-1 rounded cursor-pointer" @click="handleButtonClick">
           {{ buttonText }}
         </button>
       </div>
@@ -95,31 +95,63 @@ const handleButtonClick = () => {
   router.go(0); // Reload the page to restart the game
 };
 
+const formatKoreanDate = (date: Date): string => {
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+  // 한국 시간으로 변환 (UTC + 9)
+  const koreaTime = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+
+  const year = koreaTime.getFullYear();
+  const month = koreaTime.getMonth() + 1;
+  const day = koreaTime.getDate();
+  const weekday = days[koreaTime.getDay()];
+
+  let hours = koreaTime.getHours();
+  const minutes = koreaTime.getMinutes().toString().padStart(2, '0');
+  const isPM = hours >= 12;
+
+  const period = isPM ? '오후' : '오전';
+  if (hours > 12) hours -= 12;
+  if (hours === 0) hours = 12;
+
+  return `${year}년 ${month}월 ${day}일 (${weekday}) ${period} ${hours}시 ${minutes}분`;
+}
+
+
+type GuessState = 'correct' | 'present' | 'absent';
 const generateShareText = () => {
-  const EMOJI_MAP = {
-    correct: '🟩',
-    present: '🟨',
-    absent: '⬜️',
-    empty: '⬜️',
+  const emojiMap: Record<GuessState, string> = {
+    correct: '💙',
+    present: '🩵',
+    absent: '🤍',
   };
 
-  let text = `꼬들밥 ${props.currentRow + 1}/6\n\n`;
+  let text = `🍚 꼬들밥 🍚 ${props.currentRow + 1}회 만에 성공! ✨\n\n`;
 
   for (let i = 0; i <= props.currentRow; i++) {
-    const rowText = props.guessStates[i].map(state => EMOJI_MAP[state] || '⬜️').join('');
-    text += rowText + '\n';
+    const rowText = props.guessStates[i]
+      .map<string>((state) => emojiMap[state as GuessState])
+      .join('');
+
+    text += rowText + '\n\n';
   }
+
+  const todayStr = formatKoreanDate(new Date());
+  const url = `${window.location.protocol}//${window.location.host}`;
+
+  text += `${todayStr}\n\n${url}`;
   return text;
-}
+};
+
 
 const copyResultToClipboard = async () => {
   try {
     const textToCopy = generateShareText();
     await navigator.clipboard.writeText(textToCopy);
-    emit('show-toast', '복사된 결과를 공유해주세요');
+    emit('show-toast', '복사된 결과를 공유해주세요. 🍚');
   } catch (err) {
     console.error('클립보드 복사 실패:', err);
-    emit('show-toast', '복사에 실패했습니다.');
+    emit('show-toast', '복사에 실패했습니다. 🥲');
   }
 };
 </script>
