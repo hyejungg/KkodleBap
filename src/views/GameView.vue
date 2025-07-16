@@ -46,16 +46,16 @@
     <!-- Result Modal -->
     <ResultView
         :answerWord="answerWord"
+        :current-row="currentRow"
+        :guess-states="guessStates"
         :resultType="gameResultType"
         :show="showResultModal"
-        :guess-states="guessStates"
-        :current-row="currentRow"
         @close="showResultModal = false"
         @show-toast="handleShowToast"
     />
 
     <!-- Toast Notification -->
-    <Toast :show="showToast" :message="toastMessage" />
+    <Toast :message="toastMessage" :show="showToast" />
   </div>
 </template>
 
@@ -134,6 +134,8 @@ const submitGuess = () => {
 
   if (!isValidWord(currentGuess.value)) {
     feedbackMessage.value = '사전에 없는 단어입니다.';
+      guesses.value[currentRow.value] = [];
+      feedbackMessage.value = '';
     return;
   }
 
