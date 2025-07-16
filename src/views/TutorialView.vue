@@ -3,7 +3,7 @@
     <img alt="튜토리얼 설명 이미지" class="tutorial-image" src="@/assets/images/tutorial-cartoon.png" />
     <h2 class="title suit_b1">매일 밥풀 하나씩, 꼬들밥 어떠세요? 🍚</h2>
     <p class="description suit_r4">
-      ”꼬들밥"은 한글 자모를 조합해 단어를 맞히는 게임이에요! 자모 6개로 정답을 유추해 보세요.
+      ”꼬들밥"은 한글 자모를 조합해 단어를 맞히는 게임이에요! <br />자모 6개로 정답을 유추해 보세요.
     </p>
     
     <div class="info-box suit_r4">
@@ -21,7 +21,7 @@
     </div>
 
     <p class="description suit_r4">
-      기회는 총 6번! 실제 존재하는 단어만 정답으로 등장해요. 오늘의 꼬들밥을 맛있게 맞혀보세요 😋
+      기회는 총 6번! 실제 존재하는 단어만 정답으로 등장해요.<br />오늘의 꼬들밥을 맛있게 맞혀보세요 😋
     </p>
   </div>
 </template>
