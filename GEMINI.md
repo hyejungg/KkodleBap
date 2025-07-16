@@ -28,7 +28,6 @@
 | `KeyboardView` | 가상 키보드 UI (초/중/종성 별 구분)       |
 | `ResultView`   | 정답 성공/실패 후 결과 요약              |
 | `TutorialView` | 일러스트 기반 사용법 안내 화면             |
-| `ShareView`    | 결과 복사 및 공유 옵션 UI              |
 
 
 ##  3. 기술 스택 및 구조 설계
