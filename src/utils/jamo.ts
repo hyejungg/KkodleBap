@@ -99,8 +99,20 @@ export function getAllWordsAsJamoList(): string[][] {
     return jamoParsedWords;
 }
 
+const allComplexJamoMap: Record<string, string[]> = {
+    ...complexInitialMap,
+    ...complexMedialMap,
+    ...complexFinalMap
+};
+
 export function isValidWord(inputJamos: string[]): boolean {
+    const normalizedInput = inputJamos.flatMap(jamo => allComplexJamoMap[jamo] || [jamo]);
+    const normalizedInputStr = normalizedInput.join('');
+
     const allJamoWords = getAllWordsAsJamoList();
-    const inputWordStr = inputJamos.join('');
-    return allJamoWords.some(jamoList => jamoList.join('') === inputWordStr);
+    return allJamoWords.some(jamoList => jamoList.join('') === normalizedInputStr);
+}
+
+export function isValidJamo(key: string): boolean {
+    return CHOSEONG.includes(key) || JUNGSEONG.includes(key);
 }

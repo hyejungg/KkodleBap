@@ -60,13 +60,13 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from 'vue';
+import {computed, onMounted, onUnmounted, ref} from 'vue';
 import KeyboardView from '@/components/KeyboardView.vue';
 import BottomSheet from '@/components/BottomSheet.vue';
 import TutorialView from '@/views/TutorialView.vue';
 import ResultView from '@/views/ResultView.vue';
 import Toast from '@/components/Toast.vue'; // Toast 컴포넌트 import
-import {drawAnswer, isValidWord, splitWordToJamo} from '@/utils/jamo';
+import {drawAnswer, isValidJamo, isValidWord, splitWordToJamo} from '@/utils/jamo';
 
 const isTutorialVisible = ref(false);
 const showResultModal = ref(false);
@@ -134,8 +134,7 @@ const submitGuess = () => {
 
   if (!isValidWord(currentGuess.value)) {
     feedbackMessage.value = '사전에 없는 단어입니다.';
-      guesses.value[currentRow.value] = [];
-      feedbackMessage.value = '';
+    guesses.value[currentRow.value] = [];
     return;
   }
 
@@ -223,7 +222,24 @@ onMounted(() => {
     feedbackMessage.value = "단어를 불러오는데 실패했습니다.";
     isGameOver.value = true;
   }
+  window.addEventListener('keydown', handleKeydown);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown);
+});
+
+const handleKeydown = (e: KeyboardEvent) => {
+  const key = e.key;
+
+  if (isValidJamo(key)) {
+    handleKeyPress(key);
+  } else if (key === 'Enter') {
+    handleKeyPress('enter');
+  } else if (key === 'Backspace') {
+    handleKeyPress('backspace');
+  }
+};
 </script>
 
 <style scoped>
