@@ -18,10 +18,10 @@
         <div class="grid grid-rows-6 gap-1.5">
           <div v-for="(row, rowIndex) in board" :key="rowIndex" class="grid grid-cols-6 gap-x-[8px] gap-y-[8px]">
             <div
-              v-for="(tile, tileIndex) in row"
-              :key="tileIndex"
-              :class="getTileClass(tile, rowIndex, tileIndex)"
-              class="w-[42px] h-[42px] rounded-[7.69px] flex items-center justify-center text-2xl font-bold"
+                v-for="(tile, tileIndex) in row"
+                :key="tileIndex"
+                :class="getTileClass(tile, rowIndex, tileIndex)"
+                class="w-[42px] h-[42px] rounded-[7.69px] flex items-center justify-center text-2xl font-bold"
             >
               {{ tile.key }}
             </div>
@@ -36,12 +36,26 @@
     </main>
 
     <!-- Keyboard -->
-    <KeyboardView  @key-press="handleKeyPress" />
+    <KeyboardView @key-press="handleKeyPress"/>
 
     <!-- Tutorial Bottom Sheet -->
     <BottomSheet v-model="isTutorialVisible">
-      <TutorialView />
+      <TutorialView/>
     </BottomSheet>
+
+    <!-- Result Modal -->
+    <ResultView
+        :answerWord="answerWord"
+        :resultType="gameResultType"
+        :show="showResultModal"
+        :guess-states="guessStates"
+        :current-row="currentRow"
+        @close="showResultModal = false"
+        @show-toast="handleShowToast"
+    />
+
+    <!-- Toast Notification -->
+    <Toast :show="showToast" :message="toastMessage" />
   </div>
 </template>
 
@@ -50,18 +64,33 @@ import {computed, onMounted, ref} from 'vue';
 import KeyboardView from '@/components/KeyboardView.vue';
 import BottomSheet from '@/components/BottomSheet.vue';
 import TutorialView from '@/views/TutorialView.vue';
+import ResultView from '@/views/ResultView.vue';
+import Toast from '@/components/Toast.vue'; // Toast 컴포넌트 import
 import {drawAnswer, isValidWord, splitWordToJamo} from '@/utils/jamo';
 
 const isTutorialVisible = ref(false);
+const showResultModal = ref(false);
+const gameResultType = ref<'win' | 'loss' | null>(null);
 const feedbackMessage = ref('');
+
+// --- Toast State ---
+const showToast = ref(false);
+const toastMessage = ref('');
+
+const handleShowToast = (message: string) => {
+  toastMessage.value = message;
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 2000); // 2초 후 토스트 사라짐
+};
 
 // --- Game State ---
 const answerWord = ref('');
 const answer = ref<string[]>([]);
-const guesses = ref<string[][]>(Array.from({ length: 6 }, () => []));
-const guessStates = ref<string[][]>(Array.from({ length: 6 }, () => Array(6).fill('empty')));
+const guesses = ref<string[][]>(Array.from({length: 6}, () => []));
+const guessStates = ref<string[][]>(Array.from({length: 6}, () => Array(6).fill('empty')));
 const currentRow = ref(0);
-const isRevealing = ref(false);
 const isGameOver = ref(false);
 
 // --- Board Logic ---
@@ -71,7 +100,7 @@ const board = computed(() => {
     for (let i = 0; i < 6; i++) {
       const key = guessRow[i] || '';
       const state = guessStates.value[rowIndex][i];
-      row.push({ key, state });
+      row.push({key, state});
     }
     return row;
   });
@@ -81,7 +110,7 @@ const currentGuess = computed(() => guesses.value[currentRow.value]);
 
 // --- Event Handlers ---
 const handleKeyPress = (key: string) => {
-  if (isGameOver.value || isRevealing.value) return;
+  if (isGameOver.value) return;
 
   const currentGuessArray = currentGuess.value;
 
@@ -110,25 +139,23 @@ const submitGuess = () => {
 
   // Calculate states for the current row
   guessStates.value[currentRow.value] = calculateGuessState(currentGuess.value);
-  
-  isRevealing.value = true;
-  setTimeout(() => {
-    isRevealing.value = false;
-    checkWinLoss();
-    if (!isGameOver.value && currentRow.value < 5) {
-      currentRow.value++;
-    }
-  }, 350 * 6); // Animation delay
+
+  checkWinLoss();
+  if (!isGameOver.value && currentRow.value < 5) {
+    currentRow.value++;
+  }
 };
 
 const checkWinLoss = () => {
-    if (currentGuess.value.join('') === answer.value.join('')) {
-        isGameOver.value = true;
-        setTimeout(() => alert('성공!'), 100);
-    } else if (currentRow.value === 5) {
-        isGameOver.value = true;
-        setTimeout(() => alert(`실패! 정답: ${answerWord.value}`), 100);
-    }
+  if (currentGuess.value.join('') === answer.value.join('')) {
+    isGameOver.value = true;
+    gameResultType.value = 'win'; // Set result type
+    showResultModal.value = true; // Show modal
+  } else if (currentRow.value === 5) {
+    isGameOver.value = true;
+    gameResultType.value = 'loss'; // Set result type
+    showResultModal.value = true; // Show modal
+  }
 }
 
 // --- Styling Logic ---
@@ -173,7 +200,7 @@ const getTileClass = (tile: { key: string; state: string }, rowIndex: number, ti
       classes.push('bg-gray-200', 'text-gray-700');
     }
   }
-  
+
   return classes.join(' ');
 };
 
@@ -198,11 +225,28 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.delay-0 { transition-delay: 0ms; }
-.delay-100 { transition-delay: 100ms; }
-.delay-200 { transition-delay: 200ms; }
-.delay-300 { transition-delay: 300ms; }
-.delay-400 { transition-delay: 400ms; }
-.delay-500 { transition-delay: 500ms; }
+.delay-0 {
+  transition-delay: 0ms;
+}
+
+.delay-100 {
+  transition-delay: 100ms;
+}
+
+.delay-200 {
+  transition-delay: 200ms;
+}
+
+.delay-300 {
+  transition-delay: 300ms;
+}
+
+.delay-400 {
+  transition-delay: 400ms;
+}
+
+.delay-500 {
+  transition-delay: 500ms;
+}
 
 </style>
