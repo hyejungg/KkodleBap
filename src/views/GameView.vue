@@ -230,7 +230,6 @@ onMounted(() => {
   if (drawnWord) {
     answerWord.value = drawnWord;
     answer.value = splitWordToJamo(answerWord.value);
-    console.log('GameView mounted. Today\'s answer:', answerWord.value, answer.value);
   } else {
     // Handle case where no word could be drawn
     feedbackMessage.value = "단어를 불러오는데 실패했습니다.";
