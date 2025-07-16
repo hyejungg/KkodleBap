@@ -67,11 +67,21 @@ const close = () => {
 
 .bottom-sheet-enter-active,
 .bottom-sheet-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.bottom-sheet-enter-active .bottom-sheet-container,
+.bottom-sheet-leave-active .bottom-sheet-container {
   transition: transform 0.3s ease;
 }
 
 .bottom-sheet-enter-from,
 .bottom-sheet-leave-to {
+  opacity: 0;
+}
+
+.bottom-sheet-enter-from .bottom-sheet-container,
+.bottom-sheet-leave-to .bottom-sheet-container {
   transform: translateY(100%);
 }
 </style>
