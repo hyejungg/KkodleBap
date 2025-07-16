@@ -1,7 +1,7 @@
 <template>
   <div class="splash-view">
     <div class="content">
-      <img src="@/assets/images/splash-logo.png" alt="꼬들밥 로고" class="logo" />
+      <img alt="꼬들밥 로고" class="logo" src="@/assets/images/splash-logo.png" />
       <div class="text-group">
         <h1 class="title">꼬들밥</h1>
         <p class="subtitle suit_m3">한글 자모 맞추기 게임</p>
@@ -10,17 +10,16 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+<script lang="ts" setup>
+import {onMounted} from 'vue';
+import {useRouter} from 'vue-router';
 
 const router = useRouter();
 
 onMounted(() => {
   setTimeout(() => {
-    // TODO: GameView 라우트가 추가되면 경로 수정 필요
     router.push({ path: '/game' }); 
-  }, 3000);
+  }, 1500);
 });
 </script>
 
@@ -31,7 +30,7 @@ onMounted(() => {
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: var(--blue-100);
+  background-color: var(--color-blue-100);
 }
 
 .content {
@@ -59,10 +58,10 @@ onMounted(() => {
   font-weight: 700;
   font-size: 48px;
   line-height: 1.125;
-  color: var(--gray-700);
+  color: var(--color-gray-700);
 }
 
 .subtitle {
-  color: var(--gray-300);
+  color: var(--color-gray-300);
 }
 </style>
