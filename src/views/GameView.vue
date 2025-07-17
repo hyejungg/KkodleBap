@@ -61,6 +61,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import KeyboardView from '@/components/KeyboardView.vue';
 import BottomSheet from '@/components/BottomSheet.vue';
 import TutorialView from '@/views/TutorialView.vue';
@@ -88,10 +89,22 @@ const handleShowToast = (message: string) => {
 
 // --- Game State from Pinia Store ---
 const gameStore = useGameStore();
-const { state, submitGuess, isWin } = gameStore;
+const {
+  answerWord,
+  guesses,
+  guessStates,
+  currentRow,
+  isGameOver,
+  charStates,
+  isWin,
+} = storeToRefs(gameStore);
+const {
+  submitGuess,
+  initializeOrResetGame,
+  addCharToGuess,
+  removeCharFromGuess,
+} = gameStore;
 
-// Destructure reactive state properties
-const { answerWord, guesses, guessStates, currentRow, isGameOver, charStates } = state;
 
 // --- Board Logic ---
 const board = computed(() => {
@@ -110,17 +123,15 @@ const board = computed(() => {
 const handleKeyPress = (key: string) => {
   if (isGameOver.value) return;
 
-  const currentGuessArray = guesses.value[currentRow.value];
-
   if (key === 'enter') {
-    submitGuess(feedbackMessage); // Pass feedbackMessage ref
+    submitGuess(feedbackMessage);
   } else if (key === 'backspace') {
-    currentGuessArray.pop();
-  } else if (currentGuessArray.length < 6) {
+    removeCharFromGuess();
+  } else {
     if (feedbackMessage.value.length > 0) {
       feedbackMessage.value = ''; // Clear feedback message on new input
     }
-    currentGuessArray.push(key);
+    addCharToGuess(key);
   }
 };
 
@@ -150,8 +161,8 @@ const showTutorial = () => {
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown);
   // Initialize game if it's a new session (answerWord is empty)
-  if (!state.value.answerWord) {
-    gameStore.initializeOrResetGame();
+  if (!answerWord.value) {
+    initializeOrResetGame();
   }
 });
 
@@ -174,7 +185,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 // Watch for isGameOver to show result modal
 watch(isGameOver, (newValue) => {
   if (newValue) {
-    gameResultType.value = isWin() ? 'win' : 'loss';
+    gameResultType.value = isWin.value ? 'win' : 'loss';
     showResultModal.value = true;
   }
 });

@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import {computed, ref} from 'vue';
 import Modal from '../components/Modal.vue';
-import {useRouter} from 'vue-router';
+import { useGameStore } from '@/stores/gameState';
 
 const props = defineProps<{
   show: boolean;
@@ -38,7 +38,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['close', 'show-toast']);
-const router = useRouter();
+const gameStore = useGameStore();
 const shareFeedback = ref('');
 
 const resultTitle = computed(() => {
@@ -91,8 +91,8 @@ const buttonText = computed(() => {
 });
 
 const handleButtonClick = () => {
+  gameStore.initializeOrResetGame();
   emit('close');
-  router.go(0); // Reload the page to restart the game
 };
 
 const formatKoreanDate = (date: Date): string => {
