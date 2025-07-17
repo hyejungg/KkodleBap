@@ -60,13 +60,14 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, onUnmounted, ref} from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import KeyboardView from '@/components/KeyboardView.vue';
 import BottomSheet from '@/components/BottomSheet.vue';
 import TutorialView from '@/views/TutorialView.vue';
 import ResultView from '@/views/ResultView.vue';
-import Toast from '@/components/Toast.vue'; // Toast 컴포넌트 import
-import {drawAnswer, isValidJamo, isValidWord, splitWordToJamo} from '@/utils/jamo';
+import Toast from '@/components/Toast.vue';
+import { isValidJamo } from '@/utils/jamo';
+import { useGameStore } from '@/stores/gameState';
 
 const isTutorialVisible = ref(false);
 const showResultModal = ref(false);
@@ -85,14 +86,12 @@ const handleShowToast = (message: string) => {
   }, 2000); // 2초 후 토스트 사라짐
 };
 
-// --- Game State ---
-const answerWord = ref('');
-const answer = ref<string[]>([]);
-const guesses = ref<string[][]>(Array.from({length: 6}, () => []));
-const guessStates = ref<string[][]>(Array.from({length: 6}, () => Array(6).fill('empty')));
-const currentRow = ref(0);
-const isGameOver = ref(false);
-const charStates = ref<Record<string, string>>({});
+// --- Game State from Pinia Store ---
+const gameStore = useGameStore();
+const { state, submitGuess, isWin } = gameStore;
+
+// Destructure reactive state properties
+const { answerWord, guesses, guessStates, currentRow, isGameOver, charStates } = state;
 
 // --- Board Logic ---
 const board = computed(() => {
@@ -101,22 +100,20 @@ const board = computed(() => {
     for (let i = 0; i < 6; i++) {
       const key = guessRow[i] || '';
       const state = guessStates.value[rowIndex][i];
-      row.push({key, state});
+      row.push({ key, state });
     }
     return row;
   });
 });
 
-const currentGuess = computed(() => guesses.value[currentRow.value]);
-
 // --- Event Handlers ---
 const handleKeyPress = (key: string) => {
   if (isGameOver.value) return;
 
-  const currentGuessArray = currentGuess.value;
+  const currentGuessArray = guesses.value[currentRow.value];
 
   if (key === 'enter') {
-    submitGuess();
+    submitGuess(feedbackMessage); // Pass feedbackMessage ref
   } else if (key === 'backspace') {
     currentGuessArray.pop();
   } else if (currentGuessArray.length < 6) {
@@ -127,82 +124,7 @@ const handleKeyPress = (key: string) => {
   }
 };
 
-const submitGuess = () => {
-  if (currentGuess.value.length !== 6) {
-    feedbackMessage.value = '자모 6개를 입력해주세요!';
-    return;
-  }
-
-  if (!isValidWord(currentGuess.value)) {
-    feedbackMessage.value = '사전에 없는 단어입니다.';
-    guesses.value[currentRow.value] = [];
-    return;
-  }
-
-  // Calculate states for the current row
-  const newStates = calculateGuessState(currentGuess.value);
-  guessStates.value[currentRow.value] = newStates;
-
-  // Update charStates for keyboard coloring
-  currentGuess.value.forEach((char, index) => {
-    const currentState = charStates.value[char];
-    const newState = newStates[index];
-    if (currentState === 'correct') return;
-    if (newState === 'correct' || currentState === 'present' && newState === 'present') {
-      charStates.value[char] = newState;
-    } else if (currentState !== 'present') {
-       charStates.value[char] = newState;
-    }
-  });
-
-  checkWinLoss();
-  if (!isGameOver.value && currentRow.value < 5) {
-    currentRow.value++;
-  }
-};
-
-const checkWinLoss = () => {
-  if (currentGuess.value.join('') === answer.value.join('')) {
-    isGameOver.value = true;
-    gameResultType.value = 'win'; // Set result type
-    showResultModal.value = true; // Show modal
-  } else if (currentRow.value === 5) {
-    isGameOver.value = true;
-    gameResultType.value = 'loss'; // Set result type
-    showResultModal.value = true; // Show modal
-  }
-}
-
 // --- Styling Logic ---
-const calculateGuessState = (guessJamos: string[]): string[] => {
-  const states: string[] = Array(6).fill('absent');
-  const answerCopy = [...answer.value];
-  const guessCopy = [...guessJamos];
-
-  // First pass for 'correct' matches
-  for (let i = 0; i < 6; i++) {
-    if (guessCopy[i] === answerCopy[i]) {
-      states[i] = 'correct';
-      answerCopy[i] = ''; // Mark as used
-      guessCopy[i] = '';   // Mark as used
-    }
-  }
-
-  // Second pass for 'present' matches
-  for (let i = 0; i < 6; i++) {
-    if (guessCopy[i] !== '') {
-      const presentIndex = answerCopy.indexOf(guessCopy[i]);
-      if (presentIndex !== -1) {
-        states[i] = 'present';
-        answerCopy[presentIndex] = ''; // Mark as used
-      }
-    }
-  }
-
-  return states;
-};
-
-
 const getTileClass = (tile: { key: string; state: string }, rowIndex: number, tileIndex: number) => {
   const classes = ['bg-blue-100', 'text-gray-700'];
 
@@ -226,16 +148,11 @@ const showTutorial = () => {
 
 // --- Lifecycle ---
 onMounted(() => {
-  const drawnWord = drawAnswer();
-  if (drawnWord) {
-    answerWord.value = drawnWord;
-    answer.value = splitWordToJamo(answerWord.value);
-  } else {
-    // Handle case where no word could be drawn
-    feedbackMessage.value = "단어를 불러오는데 실패했습니다.";
-    isGameOver.value = true;
-  }
   window.addEventListener('keydown', handleKeydown);
+  // Initialize game if it's a new session (answerWord is empty)
+  if (!state.value.answerWord) {
+    gameStore.initializeOrResetGame();
+  }
 });
 
 onUnmounted(() => {
@@ -253,6 +170,14 @@ const handleKeydown = (e: KeyboardEvent) => {
     handleKeyPress('backspace');
   }
 };
+
+// Watch for isGameOver to show result modal
+watch(isGameOver, (newValue) => {
+  if (newValue) {
+    gameResultType.value = isWin() ? 'win' : 'loss';
+    showResultModal.value = true;
+  }
+});
 </script>
 
 <style scoped>
