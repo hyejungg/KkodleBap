@@ -11,12 +11,20 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+let timeoutId: ReturnType<typeof setTimeout>;
 
 onMounted(() => {
-  setTimeout(() => {
-    navigateTo('/game');
+  timeoutId = setTimeout(() => {
+    router.push('/game');
   }, 3000);
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(timeoutId);
 });
 </script>
 

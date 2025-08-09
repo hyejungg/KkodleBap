@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, Ref } from 'vue';
+import { computed, type Ref } from 'vue';
 import { useStorage } from '@vueuse/core';
 import { drawAnswer, isValidWord, splitWordToJamo } from '@/utils/jamo';
 
