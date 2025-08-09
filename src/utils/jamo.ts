@@ -1,5 +1,5 @@
-import allNounsList from '@/assets/words/all_nouns.txt?raw';
-import commonNounsList from '@/assets/words/common_nouns.txt?raw';
+import allNounsList from '~/assets/words/all_nouns.txt?raw';
+import commonNounsList from '~/assets/words/common_nouns.txt?raw';
 
 const CHOSEONG = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
 const JUNGSEONG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";

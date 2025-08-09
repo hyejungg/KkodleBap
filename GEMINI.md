@@ -32,11 +32,11 @@
 
 ##  3. 기술 스택 및 구조 설계
 ###  주요 기술 스택
-- 프레임워크: Vue 3 (Composition API 기반)
-- 상태관리: Pinia 또는 Composition API 자체 상태
-- 라우팅: Vue Router
+- 프레임워크: Nuxt 3 (Vue 3 기반 Composition API)
+- 상태관리: Pinia
+- 라우팅: Nuxt 파일 기반 라우팅
 - 스타일링: Tailwind CSS + 사용자 정의 일러스트
-- 빌드/배포: Vite, Netlify/Vercel
+- 빌드/배포: Nuxt (Vite 기반), Vercel
 - 애니메이션: Vue Transition 활용
 - 한글 자모 분해/조합: 사용자 정의 유틸 모듈 (e.g., jamo.ts)
 
@@ -47,13 +47,15 @@ kkodlebap-web/
 ├── src/
 │   ├── assets/           # 이미지, 스타일 등
 │   ├── components/       # 게임 관련 UI 컴포넌트
-│   ├── views/            # 라우팅 단위 뷰
-│   ├── composables/      # 상태 관리 (useGameState 등)
+│   ├── pages/            # 라우팅 단위 페이지
+│   ├── plugins/          # Nuxt 플러그인 (예: Pinia)
+│   ├── stores/           # Pinia 스토어
 │   ├── utils/            # 자모 유틸, 정답 체크 로직 등
-│   ├── router/           # Vue Router 설정
-│   └── App.vue           # 루트 컴포넌트
-├── index.html
-└── vite.config.ts
+│   ├── app.vue           # 루트 컴포넌트
+│   └── style.css         # 전역 스타일
+├── nuxt.config.ts
+├── package.json
+└── tsconfig.json
 ```
 
 ### 5. 게임 핵심 로직 설계

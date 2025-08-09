@@ -1,31 +1,25 @@
 {
-  "name": "vite-project",
+  "name": "nuxt-project",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.11",
     "@vueuse/core": "^13.5.0",
-    "path": "^0.12.7",
-    "pinia": "^3.0.3",
-    "vue": "^3.5.17",
-    "vue-meta": "^2.4.0",
-    "vue-router": "^4.5.1"
+    "pinia": "^3.0.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.0",
-    "@vue/tsconfig": "^0.7.0",
+    "@nuxtjs/tailwindcss": "^6.10.3",
+    "@pinia/nuxt": "^0.5.0",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^3.4.4",
+    "nuxt": "^3.12.0",
     "typescript": "~5.8.3",
-    "vercel": "^44.4.1",
-    "vite": "^7.0.4",
-    "vue-tsc": "^2.2.12"
+    "vercel": "^44.4.1"
   }
 }
