@@ -16,8 +16,7 @@
 
 ## 🛠️ 기술 스택
 
-- **Framework**: Vue 3 (Composition API with `<script setup>`)
-- **Build Tool**: Vite
+- **Framework**: Nuxt 3 (Vue 3 & Composition API)
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
 - **Package Manager**: pnpm
@@ -50,13 +49,13 @@
     ```bash
     pnpm dev
     ```
-    서버가 실행되면 터미널에 표시된 로컬 주소(예: `http://localhost:5173`)로 접속하세요.
+    서버가 실행되면 터미널에 표시된 로컬 주소(예: `http://localhost:3000`)로 접속하세요.
 
 4.  **프로덕션 빌드**
     ```bash
     pnpm run build
     ```
-    빌드 결과물은 `dist` 디렉토리에 생성됩니다.
+    빌드 결과물은 `.output/public` 디렉토리에 생성됩니다.
 
 ## 🌐 배포
 
