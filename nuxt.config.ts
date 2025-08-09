@@ -2,10 +2,16 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   srcDir: 'src/',
+  dir: {
+    public: '../public'
+  },
   css: ['~/style.css'],
   modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss'],
   typescript: {
     strict: true
+  },
+  nitro: {
+    compatibilityDate: '2025-08-09'
   },
   app: {
     head: {
