@@ -1,7 +1,7 @@
-import {defineStore} from 'pinia';
-import {computed, Ref} from 'vue';
-import {useStorage} from '@vueuse/core';
-import {drawAnswer, isValidWord, splitWordToJamo} from '@/utils/jamo';
+import { defineStore } from 'pinia';
+import { computed, Ref } from 'vue';
+import { useStorage } from '@vueuse/core';
+import { drawAnswer, isValidWord, splitWordToJamo } from '@/utils/jamo';
 
 interface GameState {
   answerWord: string;
@@ -24,7 +24,8 @@ const defaultState: GameState = {
 };
 
 export const useGameStore = defineStore('gameState', () => {
-  const state = useStorage<GameState>('gameState', defaultState, sessionStorage, {
+  const storage = typeof window !== 'undefined' ? window.sessionStorage : undefined;
+  const state = useStorage<GameState>('gameState', defaultState, storage, {
     mergeDefaults: true,
   });
 

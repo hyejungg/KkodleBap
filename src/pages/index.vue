@@ -13,12 +13,10 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 
-const router = useRouter();
-
 onMounted(() => {
   setTimeout(() => {
-    router.push({ path: '/game' }); 
-  }, 1500);
+    navigateTo('/game');
+  }, 3000);
 });
 </script>
 
