@@ -1,5 +1,5 @@
 <template>
-  <Modal :show="show" @close="$emit('close')">
+<Modal :show="show" @close="$emit('close')">
     <div class="result-container">
       <h3 class="suit_b_title">{{ resultTitle }}</h3>
       <p class="py-3 suit_m3">{{ resultDescription }}</p>
@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import {computed, ref} from 'vue';
-import Modal from '../components/Modal.vue';
+import Modal from './Modal.vue';
 import { useGameStore } from '@/stores/gameState';
 
 const props = defineProps<{
@@ -56,9 +56,9 @@ const resultDescription = computed(() => {
 
 const resultImage = computed(() => {
   if (props.resultType === 'win') {
-    return new URL('@/assets/images/result_view/win_img.png', import.meta.url).href;
+    return new URL('~/assets/images/result_view/win_img.png', import.meta.url).href;
   } else if (props.resultType === 'loss') {
-    return new URL('@/assets/images/result_view/loss_img.png', import.meta.url).href;
+    return new URL('~/assets/images/result_view/loss_img.png', import.meta.url).href;
   }
   return '';
 });
@@ -157,7 +157,7 @@ const copyResultToClipboard = async () => {
 
 
 <style scoped>
-@import "@/assets/styles/index.css";
+@import "~/assets/styles/index.css";
 
 .result-container {
   display: flex;

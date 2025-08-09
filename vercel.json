@@ -1,19 +1,6 @@
 {
-  "framework": "vite",
+  "framework": "nuxtjs",
   "installCommand": "pnpm install",
-  "outputDirectory": "dist",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "installCommand": "pnpm install",
-        "buildCommand": "pnpm run build",
-        "outputDirectory": "dist"
-      }
-    }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "buildCommand": "pnpm run build",
+  "outputDirectory": ".output/public"
 }

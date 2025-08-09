@@ -8,8 +8,8 @@
         class="key"
         @click="handleKeyPress(key)"
       >
-        <img v-if="key === 'backspace'" alt="Backspace" src="@/assets/icons/backspace.svg" />
-        <img v-else-if="key === 'enter'" alt="Enter" src="@/assets/icons/check.svg" />
+        <img v-if="key === 'backspace'" alt="Backspace" src="~/assets/icons/backspace.svg" />
+        <img v-else-if="key === 'enter'" alt="Enter" src="~/assets/icons/check.svg" />
         <span v-else>{{ key }}</span>
       </button>
     </div>
