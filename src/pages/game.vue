@@ -8,7 +8,7 @@
         <p class="p-1 text-sm text-gray-200">한글 자모 맞추기 게임</p>
       </div>
       <div class="cursor-pointer" @click="showTutorial">
-        <img alt="Tutorial" class="pr-2 h-8 w-8" src="@/assets/icons/question-mark.svg">
+        <img alt="Tutorial" class="pr-2 h-8 w-8" src="~/assets/icons/question-mark.svg">
       </div>
     </header>
 
@@ -64,8 +64,8 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import KeyboardView from '@/components/KeyboardView.vue';
 import BottomSheet from '@/components/BottomSheet.vue';
-import TutorialView from '@/views/TutorialView.vue';
-import ResultView from '@/views/ResultView.vue';
+import TutorialView from '@/components/TutorialView.vue';
+import ResultView from '@/components/ResultView.vue';
 import Toast from '@/components/Toast.vue';
 import { isValidJamo } from '@/utils/jamo';
 import { useGameStore } from '@/stores/gameState';

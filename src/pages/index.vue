@@ -1,7 +1,7 @@
 <template>
   <div class="splash-view">
     <div class="content">
-      <img alt="꼬들밥 로고" class="logo" src="@/assets/images/splash-logo.png" />
+      <img alt="꼬들밥 로고" class="logo" src="~/assets/images/splash-logo.png" />
       <div class="text-group">
         <h1 class="title">꼬들밥</h1>
         <p class="subtitle suit_m3">한글 자모 맞추기 게임</p>
@@ -11,8 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted} from 'vue';
-import {useRouter} from 'vue-router';
+import { onMounted } from 'vue';
 
 const router = useRouter();
 
